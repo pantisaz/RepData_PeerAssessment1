@@ -1,25 +1,81 @@
----
-title: "Reproducible Research: Peer Assessment 1"
-output: 
-  html_document:
-    keep_md: true
----
+
+# First Peer Assesement - Reproducible Data
 
 
-## Loading and preprocessing the data
+## Loading the processed data
+```{r, echo=TRUE}
 
+data<- read.csv("activity.csv")
 
+```
 
-## What is mean total number of steps taken per day?
+## What is the mean total number of steps taken 
+```{r, echo=TRUE}
+hist<-aggregate(data$steps, by=list(date=data$date), sum, na.rm = TRUE)
 
+hist(hist[,2], main = "Histogram", xlab = "Total number of steps", breaks = 25)
 
+mean(hist[,2])
 
-## What is the average daily activity pattern?
+median(hist[,2])
 
+```
 
+## What is the average daily activity pattern
+
+```{r, echo=TRUE}
+library(ggplot2)
+
+means<-aggregate(data$steps, by=list(interval=data$interval), mean, na.rm = TRUE)
+
+colnames(means)<-c("interval", "Average.steps")
+
+qplot(interval, Average.steps, data= means, xlab = "Interval", ylab = "Average number of steps", geom = "line")
+
+means[which.max(means[,2]),]
+
+```
 
 ## Imputing missing values
 
+```{r, echo=TRUE}
+length(which(is.na(data$steps)))
 
+df<- merge(data, means, by= "interval")
 
-## Are there differences in activity patterns between weekdays and weekends?
+for (i in 1:nrow(df)){
+  
+  if (is.na(df[i,2]) == TRUE){
+    
+    df[i,2] <- df[i,4]
+    
+  }
+  
+}
+
+histo<-aggregate(df$steps, by=list(date=df$date), sum, na.rm = TRUE)
+
+hist(histo[,2], main = "Histogram", xlab = "Total number of steps", breaks = 25)
+
+mean(histo[,2])
+
+median(histo[,2])
+
+```
+
+## Are there any differences in activity patterns between weekdays and weekends?
+
+```{r, echo=TRUE}
+df$day<- weekdays(as.Date(df$date))
+
+library(car)
+df$day<-recode(df$day,"c('Monday','Tuesday','Wednesday','Thursday','Friday')='Weekday'") 
+  
+df$day<-recode(df$day,"c('Sunday','Saturday')='Weekend'")  
+
+df1<-aggregate(df$steps, by=list(interval=df$interval, day=df$day), mean, na.rm = TRUE)
+
+ggplot(df1, aes(interval, x)) + ylab("Average number of steps") + geom_line() + facet_grid(day ~ .)
+
+```
+
