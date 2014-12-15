@@ -1,3 +1,8 @@
+---
+output:
+        html_document:
+                keep_md: true
+---
 
 # First Peer Assesement - Reproducible Data
 
@@ -16,7 +21,7 @@ hist<-aggregate(data$steps, by=list(date=data$date), sum, na.rm = TRUE)
 hist(hist[,2], main = "Histogram", xlab = "Total number of steps", breaks = 25)
 ```
 
-![](./PA1_template_files/figure-html/unnamed-chunk-2-1.png) 
+![plot of chunk unnamed-chunk-2](figure/unnamed-chunk-2-1.png) 
 
 ```r
 mean(hist[,2])
@@ -39,13 +44,7 @@ median(hist[,2])
 
 ```r
 library(ggplot2)
-```
 
-```
-## Warning: package 'ggplot2' was built under R version 3.1.2
-```
-
-```r
 means<-aggregate(data$steps, by=list(interval=data$interval), mean, na.rm = TRUE)
 
 colnames(means)<-c("interval", "Average.steps")
@@ -53,7 +52,7 @@ colnames(means)<-c("interval", "Average.steps")
 qplot(interval, Average.steps, data= means, xlab = "Interval", ylab = "Average number of steps", geom = "line")
 ```
 
-![](./PA1_template_files/figure-html/unnamed-chunk-3-1.png) 
+![plot of chunk unnamed-chunk-3](figure/unnamed-chunk-3-1.png) 
 
 ```r
 means[which.max(means[,2]),]
@@ -93,7 +92,7 @@ histo<-aggregate(df$steps, by=list(date=df$date), sum, na.rm = TRUE)
 hist(histo[,2], main = "Histogram", xlab = "Total number of steps", breaks = 25)
 ```
 
-![](./PA1_template_files/figure-html/unnamed-chunk-4-1.png) 
+![plot of chunk unnamed-chunk-4](figure/unnamed-chunk-4-1.png) 
 
 ```r
 mean(histo[,2])
@@ -127,5 +126,5 @@ df1<-aggregate(df$steps, by=list(interval=df$interval, day=df$day), mean, na.rm 
 ggplot(df1, aes(interval, x)) + ylab("Average number of steps") + geom_line() + facet_grid(day ~ .)
 ```
 
-![](./PA1_template_files/figure-html/unnamed-chunk-5-1.png) 
+![plot of chunk unnamed-chunk-5](figure/unnamed-chunk-5-1.png) 
 
